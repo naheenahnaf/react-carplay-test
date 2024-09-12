@@ -8,7 +8,7 @@ import Nav from "./components/Nav";
 import Carplay from './components/Carplay'
 import Camera from './components/Camera'
 import { Box, Modal } from '@mui/material'
-import { useCarplayStore, useStatusStore } from "./store/store";
+import { useCarplayStore } from "./store/store";
 
 const style = {
   position: 'absolute',
