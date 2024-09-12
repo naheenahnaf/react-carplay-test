@@ -21,5 +21,3 @@ export class PiMost {
     this.socketMostClient.stream(stream)
   }
 }
-
-

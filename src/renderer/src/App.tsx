@@ -10,9 +10,6 @@ import Camera from './components/Camera'
 import { Box, Modal } from '@mui/material'
 import { useCarplayStore, useStatusStore } from "./store/store";
 
-// rm -rf node_modules/.vite; npm run dev
-
-
 const style = {
   position: 'absolute',
   top: '50%',

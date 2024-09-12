@@ -5,9 +5,7 @@ import { DEFAULT_CONFIG } from 'node-carplay/node'
 import { Socket } from './Socket'
 import * as fs from 'fs';
 import { PiMost } from './PiMost'
-import {Canbus} from "./Canbus";
 import { ExtraConfig, KeyBindings } from "./Globals";
-// import CarplayNode, {DEFAULT_CONFIG, CarplayMessage} from "node-carplay/node";
 
 let mainWindow: BrowserWindow
 const appPath: string = app.getPath('userData')
@@ -34,14 +32,11 @@ const EXTRA_CONFIG: ExtraConfig = {
   camera: '',
   microphone: '',
   piMost: false,
-  canbus: false,
   bindings: DEFAULT_BINDINGS,
-  most: {},
-  canConfig: {}
+  most: {}
 }
 
 let piMost: null | PiMost
-let canbus: null | Canbus
 
 let socket: null | Socket
 
@@ -67,18 +62,6 @@ fs.exists(configPath, (exists) => {
       console.log('creating pi most in main')
       piMost = new PiMost(socket)
     }
-
-    if(config!.canbus) {
-      console.log("Configuring can", config!.canConfig)
-      canbus = new Canbus('can0',  socket, config!.canConfig)
-      canbus.on('lights', (data) => {
-        console.log('lights', data)
-      })
-      canbus.on('reverse', (data) => {
-        mainWindow?.webContents?.send('reverse', data)
-      })
-    }
-
 })
 
 const handleSettingsReq = (_: IpcMainEvent ) => {
@@ -108,16 +91,6 @@ function createWindow(): void {
     }
   })
   app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
-
-  // mainWindow.webContents.session.setDevicePermissionHandler((details) => {
-  //   if (true) {
-  //     if (details.device.vendorId === 4884 && details.device.productId === 5408) {
-  //       // Always allow this type of device (this allows skipping the call to `navigator.hid.requestDevice` first)
-  //       return true
-  //     }
-  //   }
-  //   return false
-  // })
 
   mainWindow.webContents.session.setPermissionCheckHandler(() => {
       return true
@@ -179,15 +152,6 @@ app.whenReady().then(() => {
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-  // const carplay = new CarplayNode(DEFAULT_CONFIG)
-  //
-  // carplay.start()
-  // carplay.onmessage = (message: CarplayMessage) => {
-  //
-  //   if (message.type === 'audio') {
-  //     mainWindow.webContents.send('audioData', message.message)
-  //   }
-  // }
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
@@ -201,8 +165,6 @@ app.whenReady().then(() => {
   ipcMain.on('getSettings', handleSettingsReq)
 
   ipcMain.on('saveSettings', saveSettings)
-
-  // ipcMain.on('startStream', startMostStream)
 
   ipcMain.on('quit', quit)
 
@@ -227,13 +189,6 @@ const saveSettings = (settings: ExtraConfig) => {
   fs.writeFileSync(configPath, JSON.stringify(settings))
 }
 
-// const startMostStream = (_: IpcMainEvent, most: Stream) => {
-//   console.log("stream request")
-//   if(piMost) {
-//     piMost.stream(most)
-//   }
-// }
-
 const quit = (_: IpcMainEvent) => {
   app.quit()
 }
@@ -246,6 +201,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.

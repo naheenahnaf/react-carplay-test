@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { RotatingLines } from 'react-loader-spinner'
-//import './App.css'
 import {
   findDevice,
   requestDevice,
@@ -51,7 +50,6 @@ function Carplay({ receivingVideo, setReceivingVideo, settings, command, command
     height: height,
     mediaDelay: settings.mediaDelay
   }
-  // const pathname = "/"
   console.log(pathname)
 
   const renderWorker = useMemo(() => {
@@ -122,9 +120,6 @@ function Carplay({ receivingVideo, setReceivingVideo, settings, command, command
         case 'audio':
           clearRetryTimeout()
           processAudio(ev.data.message)
-          break
-        case 'media':
-          //TODO: implement
           break
         case 'command':
           const {
@@ -200,13 +195,7 @@ function Carplay({ receivingVideo, setReceivingVideo, settings, command, command
         setDeviceFound(false)
       }
     }
-
-    //checkDevice()
   }, [carplayWorker, checkDevice])
-
-  // const onClick = useCallback(() => {
-  //   checkDevice(true)
-  // }, [checkDevice])
 
   const sendTouchEvent = useCarplayTouch(carplayWorker, width, height)
 
