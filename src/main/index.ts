@@ -4,7 +4,6 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { DEFAULT_CONFIG } from 'node-carplay/node'
 import { Socket } from './Socket'
 import * as fs from 'fs';
-import { PiMost } from './PiMost'
 import { ExtraConfig, KeyBindings } from "./Globals";
 
 let mainWindow: BrowserWindow
@@ -31,12 +30,8 @@ const EXTRA_CONFIG: ExtraConfig = {
   kiosk: true,
   camera: '',
   microphone: '',
-  piMost: false,
-  bindings: DEFAULT_BINDINGS,
-  most: {}
+  bindings: DEFAULT_BINDINGS
 }
-
-let piMost: null | PiMost
 
 let socket: null | Socket
 
@@ -58,10 +53,6 @@ fs.exists(configPath, (exists) => {
       console.log("config created and read")
     }
     socket = new Socket(config!, saveSettings)
-    if(config!.most) {
-      console.log('creating pi most in main')
-      piMost = new PiMost(socket)
-    }
 })
 
 const handleSettingsReq = (_: IpcMainEvent ) => {
@@ -114,7 +105,6 @@ function createWindow(): void {
 
     callback(selectedDevice?.deviceId)
   })
-  // app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
