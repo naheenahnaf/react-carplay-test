@@ -7,7 +7,6 @@ interface CarplayStore {
   settings: null | ExtraConfig,
   saveSettings: (settings: ExtraConfig) => void
   getSettings: () => void
-  stream: (stream: Stream) => void
 }
 
 export const useCarplayStore = create<CarplayStore>()((set) =>({
@@ -18,9 +17,6 @@ export const useCarplayStore = create<CarplayStore>()((set) =>({
   },
   getSettings: () => {
     socket.emit('getSettings')
-  },
-  stream: (stream) => {
-    socket.emit('stream', stream)
   }
 }))
 

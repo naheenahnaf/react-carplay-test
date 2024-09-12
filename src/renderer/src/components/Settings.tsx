@@ -21,7 +21,6 @@ import {
   Slide
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2';
-import MostStream from './MostStream'
 import { TransitionProps } from '@mui/material/transitions/transition'
 import { KeyBindings } from "./KeyBindings";
 import { useCarplayStore } from "../store/store";
@@ -43,7 +42,6 @@ function Settings({ settings }: SettingsProps) {
   const [activeSettings, setActiveSettings] = useState<ExtraConfig>(settings)
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([])
   const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([])
-  const [openStream, setOpenStream] = useState<boolean>(false)
   const [openBindings, setOpenBindings] = useState<boolean>(false)
   const saveSettings = useCarplayStore(state => state.saveSettings)
 
@@ -71,38 +69,12 @@ function Settings({ settings }: SettingsProps) {
     fps: () => <Grid key={'fps'} xs={4}><TextField label={'FPS'} inputProps={{ inputMode: 'numeric'}} value={activeSettings.fps} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
       settingsChange('fps', parseInt(event.target.value))
     }}/></Grid>,
-    iBoxVersion: () => <Grid key={'iBoxVersion'} xs={4}><TextField label={'IBOX VERSION'} inputProps={{ inputMode: 'numeric'}} value={activeSettings.iBoxVersion} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-      settingsChange('iBoxVersion', parseInt(event.target.value))
-            }}/></Grid>,
-    mediaDelay: () => <Grid key={'mediaDelay'} xs={4}><TextField label={'MEDIA DELAY'} inputProps={{ inputMode: 'numeric'}} value={activeSettings.mediaDelay} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-      settingsChange('mediaDelay', parseInt(event.target.value))
-              }}/></Grid>,
-    phoneWorkMode: () => <Grid key={'phoneWorkMode'} xs={4}><TextField label={'PHONE WORK MODE'} inputProps={{ inputMode: 'numeric'}} value={activeSettings.phoneWorkMode} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-      settingsChange('phoneWorkMode', parseInt(event.target.value))
-                }}/></Grid>,
     kiosk: () => {
       return (
         <Grid key={'kiosk'} xs={4}>
           <FormControl>
             <FormControlLabel id={'kiosk'}  label={'KIOSK'} control={<Checkbox checked={activeSettings.kiosk} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               settingsChange('kiosk', event.target.checked)
-            }}/>} />
-          </FormControl>
-        </Grid>
-      )
-    },
-    piMost: () => {
-      return (
-        <Grid key={'pimost'} xs={4}>
-          <FormControl>
-            <FormControlLabel id={'pimost'}  label={'PIMOST'} control={<Checkbox checked={activeSettings.piMost} onChange={(_: React.ChangeEvent<HTMLInputElement>) => {
-              // settingsChange('piMost', event.target.checked)
-              if(activeSettings.piMost) {
-                settingsChange('piMost', false)
-                settingsChange('most', {})
-              } else {
-                setOpenStream(true)
-              }
             }}/>} />
           </FormControl>
         </Grid>
@@ -235,18 +207,6 @@ function Settings({ settings }: SettingsProps) {
             <Button onClick={() => setOpenBindings(true)}>BINDINGS</Button>
           </Box>
         </Grid>
-        <Dialog
-        open={openStream}
-        TransitionComponent={Transition}
-        keepMounted
-        PaperProps={{style: {minHeight: '80%'}}}
-        onClose={() => setOpenStream(false)}
-        >
-          <DialogTitle>{'PiMost Stream Settings'}</DialogTitle>
-          <DialogContent >
-            <MostStream setSettings={settingsChange} setOpenStream={setOpenStream}/>
-          </DialogContent>
-        </Dialog>
         <Dialog
           open={openBindings}
           TransitionComponent={Transition}
